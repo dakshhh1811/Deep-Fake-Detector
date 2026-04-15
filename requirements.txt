@@ -1,0 +1,11 @@
+# Core deep learning library
+tensorflow==2.19.0
+
+# Used for plotting and saving charts
+matplotlib
+
+# Required for numerical operations
+numpy
+
+# Required for loading and processing image files
+Pillow
