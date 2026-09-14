@@ -50,13 +50,9 @@ pip install -r requirements.txt
 
 This project **will not run** unless your dataset is set up correctly.
 
-The script `df3.py` uses **hard-coded local paths** (`C:\Users\SARTHAK\OneDrive\Desktop\Dataset\...`). You must either:
-1.  Place your dataset in that *exact* location.
-2.  **OR** open `df3.py` and change the `TRAIN_DIR`, `VAL_DIR`, and `TEST_DIR` variables to match your dataset's location.
+Place a `Dataset` folder in the same directory as `df3.py`, structured as:
 
-The required folder structure is:
-```
-C:\Users\SARTHAK\OneDrive\Desktop\Dataset
+Dataset/
 ├── Test
 │   ├── Fake
 │   └── Real
@@ -66,7 +62,8 @@ C:\Users\SARTHAK\OneDrive\Desktop\Dataset
 └── Validation
     ├── Fake
     └── Real
-```
+
+Paths are resolved automatically relative to the script location — no manual editing needed.
 
 ## 3. How to Run the Program
 
@@ -87,71 +84,12 @@ This is the main script that trains, validates, and tests the model.
 ### B. Predict a Single Image
 Once you have the `best_deepfake_model.keras` file, you can use `predict.py` to test a single image.
 
-**Note:** You will need to create the `predict.py` file. Here is the code for it:
-```python
-# predict.py
-import tensorflow as tf
-import numpy as np
-import sys
-import os
-
-# --- Settings ---
-IMG_HEIGHT = 224
-IMG_WIDTH = 224
-MODEL_FILE = "best_deepfake_model.keras"
-# The class names must be in the same order as the training script
-# 0 = Fake, 1 = Real
-class_names = ['Fake', 'Real'] 
-
-# --- 1. Load Model ---
-if not os.path.exists(MODEL_FILE):
-    print(f"Error: Model file not found at {MODEL_FILE}")
-    sys.exit(1)
-    
-print(f"Loading model from {MODEL_FILE}...")
-model = tf.keras.models.load_model(MODEL_FILE)
-
-# --- 2. Get Image Path ---
-if len(sys.argv) < 2:
-    print("Error: No image path provided.")
-    print("Usage: python predict.py \"path/to/your/image.jpg\"")
-    sys.exit(1)
-
-image_path = sys.argv[1]
-if not os.path.exists(image_path):
-    print(f"Error: Image file not found at {image_path}")
-    sys.exit(1)
-
-# --- 3. Load and Prepare Image ---
-try:
-    img = tf.keras.utils.load_img(
-        image_path, target_size=(IMG_HEIGHT, IMG_WIDTH)
-    )
-    img_array = tf.keras.utils.img_to_array(img)
-    img_array = tf.expand_dims(img_array, 0) # Create a batch
-except Exception as e:
-    print(f"Error loading image: {e}")
-    sys.exit(1)
-
-# --- 4. Make Prediction ---
-predictions = model.predict(img_array)
-score = predictions[0][0] # Get the single score from the batch
-
-# --- 5. Show Result ---
-prediction_class = class_names[int(round(score))]
-confidence = (1 - score) if score < 0.5 else score
-
-print(f"\n--- Analysis Complete ---")
-print(f"File: {os.path.basename(image_path)}")
-print(f"Prediction: {prediction_class}")
-print(f"Confidence: {confidence * 100:.2f}%")
-print(f"(Raw Score: {score:.4f})")
-```
+Run it directly with an image path:
 
 **To run the prediction script:**
 ```bash
 # Pass the path to your image in quotes
-python predict.py "C:\Users\SARTHAK\Downloads\my_test_photo.jpg"
+python predict.py "path/to/your/image.jpg"
 ```
 **Example Output:**
 ```
