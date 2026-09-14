@@ -9,9 +9,10 @@ print(f"TensorFlow Version: {tf.__version__}")
 # --- 1. DEFINE ALL PATHS (Using your provided paths) ---
 # Using raw strings (r"...") to avoid errors with backslashes
 
-TRAIN_DIR = r"C:\Users\SARTHAK\OneDrive\Desktop\Dataset\Train"
-VAL_DIR = r"C:\Users\SARTHAK\OneDrive\Desktop\Dataset\Validation"
-TEST_DIR = r"C:\Users\SARTHAK\OneDrive\Desktop\Dataset\Test"
+DATASET_DIR = os.path.join(os.path.dirname(__file__), "Dataset")
+TRAIN_DIR = os.path.join(DATASET_DIR, "Train")
+VAL_DIR = os.path.join(DATASET_DIR, "Validation")
+TEST_DIR = os.path.join(DATASET_DIR, "Test")
 
 # --- 2. SET MODEL PARAMETERS ---
 # From the paper, EfficientNetB4 works well with 224x224
